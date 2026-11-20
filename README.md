@@ -32,6 +32,17 @@ Schrift: nur vier Größen – 22 Seitentitel, 17 Abschnitt, 14 Text, 12 Hinweis
 | `SvgSortierung`, `svgSpalte()` | Tabellen über die Spaltenköpfe sortieren (Zahlen natürlich: 2 vor 10) |
 | `SvgTabelle` | Tabelle nutzt immer die volle Breite, bei Bedarf waagerecht schiebbar |
 
+## Standard für Tabellen
+
+* **Listen** (Konten, Regeln, Journal, Parzellen, Mitglieder …): immer über die
+  Spaltenköpfe sortierbar, ein Klick sortiert, ein zweiter dreht die Richtung.
+  Spalten mit Beträgen als `numeric`. Aktions-Spalten nicht sortierbar.
+* **Berichte mit Summenzeilen** (EÜR, Plan/Ist, Jahresvergleich): feste
+  Reihenfolge wie im Formular – dort nicht sortieren.
+* Alle Tabellen über `SvgTabelle` in voller Breite.
+* Zeilen nur bei Ausnahmen tönen (gelöscht, storniert, nicht zugeordnet),
+  nie für den Normalfall.
+
 ## Einbinden
 
 ```yaml
