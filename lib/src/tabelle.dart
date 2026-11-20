@@ -17,7 +17,9 @@ class SvgTabelle extends StatelessWidget {
       builder: (context, grenzen) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: grenzen.maxWidth),
+          // Bei unbegrenzter Breite (z. B. in einer Zeile) nicht strecken.
+          constraints: BoxConstraints(
+              minWidth: grenzen.hasBoundedWidth ? grenzen.maxWidth : 0),
           child: tabelle,
         ),
       ),
