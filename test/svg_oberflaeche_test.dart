@@ -51,10 +51,10 @@ void main() {
 
   testWidgets('SvgTabelle nutzt die volle Breite', (tester) async {
     await tester.binding.setSurfaceSize(const Size(1200, 600));
-    await tester.pumpWidget(_app(const SvgTabelle(
+    await tester.pumpWidget(_app(SvgTabelle(
       tabelle: DataTable(
-          columns: [DataColumn(label: Text('A'))],
-          rows: [DataRow(cells: [DataCell(Text('1'))])]),
+          columns: const [DataColumn(label: Text('A'))],
+          rows: const [DataRow(cells: [DataCell(Text('1'))])]),
     )));
     expect(tester.getSize(find.byType(DataTable)).width, 1200);
     await tester.binding.setSurfaceSize(null);
