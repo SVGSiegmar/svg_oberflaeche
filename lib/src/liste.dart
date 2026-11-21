@@ -245,6 +245,7 @@ class _SvgListeState extends State<SvgListe> {
         }
         return Scrollbar(
           controller: _waagerecht,
+          thumbVisibility: true,
           child: SingleChildScrollView(
             controller: _waagerecht,
             scrollDirection: Axis.horizontal,
@@ -357,15 +358,17 @@ class SvgListenZeile extends StatelessWidget {
 /// Seite mit festem Kopfbereich (Überschrift, Filter, Formular) und einer
 /// Liste, die den restlichen Platz füllt. Nur die Zeilen der Liste scrollen.
 ///
-/// Ist das Fenster sehr niedrig, scrollt der Kopfbereich für sich (höchstens
-/// 60 % der Höhe), damit für die Liste immer Platz bleibt.
-class SvgListenSeite extends StatelessWidget {
+/// Bei kleinen Fenstern (niedriger als [mindestHoehe]) scrollt stattdessen die
+/// ganze Seite mit sichtbarem Scrollbalken; die Liste behält dann eine feste
+/// Höhe und ihren festen Spaltenkopf.
+class SvgListenSeite extends StatefulWidget {
   const SvgListenSeite({
     super.key,
     required this.kopf,
     required this.liste,
     this.rand = const EdgeInsets.all(24),
     this.abstand = 16,
+    this.mindestHoehe = 720,
   });
 
   final Widget kopf;
@@ -373,27 +376,60 @@ class SvgListenSeite extends StatelessWidget {
   final EdgeInsets rand;
   final double abstand;
 
+  /// Unterhalb dieser Höhe scrollt die ganze Seite.
+  final double mindestHoehe;
+
+  @override
+  State<SvgListenSeite> createState() => _SvgListenSeiteState();
+}
+
+class _SvgListenSeiteState extends State<SvgListenSeite> {
+  final _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: rand,
-      child: LayoutBuilder(builder: (context, grenzen) {
-        if (!grenzen.hasBoundedHeight) {
-          return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            kopf,
-            SizedBox(height: abstand),
-            SizedBox(height: 520, child: liste),
-          ]);
-        }
-        return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    final w = widget;
+    return LayoutBuilder(builder: (context, grenzen) {
+      final hoehe = grenzen.hasBoundedHeight ? grenzen.maxHeight : 0.0;
+      if (!grenzen.hasBoundedHeight || hoehe < w.mindestHoehe) {
+        // Kleines Fenster: ganze Seite scrollt, Scrollbalken immer sichtbar.
+        final listenHoehe = (hoehe * 0.8).clamp(360.0, 640.0);
+        final inhalt = Padding(
+          padding: w.rand,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            w.kopf,
+            SizedBox(height: w.abstand),
+            SizedBox(height: listenHoehe, child: w.liste),
+          ]),
+        );
+        if (!grenzen.hasBoundedHeight) return inhalt;
+        return Scrollbar(
+          controller: _scroll,
+          thumbVisibility: true,
+          child: SingleChildScrollView(controller: _scroll, child: inhalt),
+        );
+      }
+      return Padding(
+        padding: w.rand,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: grenzen.maxHeight * 0.6),
-            child: SingleChildScrollView(child: kopf),
+            constraints: BoxConstraints(maxHeight: hoehe * 0.6),
+            child: Scrollbar(
+              controller: _scroll,
+              thumbVisibility: true,
+              child: SingleChildScrollView(controller: _scroll, child: w.kopf),
+            ),
           ),
-          SizedBox(height: abstand),
-          Expanded(child: liste),
-        ]);
-      }),
-    );
+          SizedBox(height: w.abstand),
+          Expanded(child: w.liste),
+        ]),
+      );
+    });
   }
 }
