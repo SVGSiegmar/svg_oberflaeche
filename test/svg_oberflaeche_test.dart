@@ -59,4 +59,31 @@ void main() {
     expect(tester.getSize(find.byType(DataTable)).width, 1200);
     await tester.binding.setSurfaceSize(null);
   });
+
+  testWidgets('Liste: Kopf bleibt stehen, nur Zeilen scrollen', (tester) async {
+    int? sortiert;
+    await tester.pumpWidget(_app(SvgListenSeite(
+      kopf: const Text('Kopfbereich'),
+      liste: SvgListe(
+        spalten: const [
+          SvgListenSpalte('Nr.', breite: 80),
+          SvgListenSpalte('Name', breite: 200),
+          SvgListenSpalte('Betrag', breite: 120, zahl: true),
+        ],
+        anzahl: 200,
+        beiSortieren: (s, a) => sortiert = s,
+        zelle: (i, s) => Text('Z$i S$s'),
+      ),
+    )));
+    expect(find.text('Name'), findsOneWidget);
+    await tester.drag(find.text('Z3 S1'), const Offset(0, -2000));
+    await tester.pump();
+    // Kopf und Kopfbereich sind weiterhin sichtbar
+    expect(find.text('Name'), findsOneWidget);
+    expect(find.text('Kopfbereich'), findsOneWidget);
+    expect(find.text('Z3 S1'), findsNothing);
+    await tester.tap(find.text('Betrag'));
+    expect(sortiert, 2);
+    expect(tester.takeException(), isNull);
+  });
 }

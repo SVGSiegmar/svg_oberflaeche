@@ -69,3 +69,19 @@ löschen ihre Fassung und importieren den Baustein – die Aufrufe bleiben gleic
 flutter pub get
 flutter test
 ```
+
+## Lange Tabellen: `SvgListe` (ab 0.2.0)
+
+Für Listen, die über eine Bildschirmseite wachsen (Konten, Regeln, Journal,
+Planzeilen):
+
+- **Spaltenkopf bleibt stehen**, nur die Zeilen scrollen.
+- Kopfbereich der Seite (Überschrift, Filter, Formular) steht ebenfalls fest:
+  `SvgListenSeite(kopf: …, liste: SvgListe(…))`.
+- **Bearbeiten ohne Springen:** Zeile antippen → Formular oben füllen, die
+  Zeile bleibt an ihrem Platz und wird blau markiert (`ausgewaehlt`).
+- Optional `unterKopf`: feste Bearbeitungsleiste direkt unter dem Kopf, Felder
+  in derselben Reihenfolge wie die Spalten (`SvgListenZeile`).
+- `sonderZeile` für Zwischenüberschriften und Summen, `fuss` für eine feste
+  Summenzeile.
+- Volle Breite: Spalten mit `flex` wachsen mit, sonst waagerecht schieben.

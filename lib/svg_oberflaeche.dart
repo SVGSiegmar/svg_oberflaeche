@@ -7,6 +7,7 @@
 library;
 
 export 'src/farben.dart';
+export 'src/liste.dart';
 export 'src/meldungen.dart';
 export 'src/sortierung.dart';
 export 'src/tabelle.dart';
