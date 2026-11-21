@@ -71,6 +71,7 @@ void main() {
           SvgListenSpalte('Betrag', breite: 120, zahl: true),
         ],
         anzahl: 200,
+        ausgewaehlt: 1,
         beiSortieren: (s, a) => sortiert = s,
         zelle: (i, s) => Text('Z$i S$s'),
       ),

@@ -145,15 +145,16 @@ class _SvgListeState extends State<SvgListe> {
         onTap: w.beiTippen == null ? null : () => w.beiTippen!(i),
         child: Container(
           constraints: const BoxConstraints(minHeight: 48),
-          // Markierte Zeile zusätzlich mit blauem Streifen links
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: const BorderSide(color: SvgFarben.rahmen),
-              left: i == w.ausgewaehlt
-                  ? const BorderSide(color: SvgFarben.blau, width: 3)
-                  : BorderSide.none,
-            ),
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: SvgFarben.rahmen)),
           ),
+          // Markierte Zeile mit blauem Streifen links. Als Vordergrund
+          // gezeichnet, damit sich die Spalten nicht verschieben.
+          foregroundDecoration: i == w.ausgewaehlt
+              ? const BoxDecoration(
+                  border: Border(
+                      left: BorderSide(color: SvgFarben.blau, width: 3)))
+              : null,
           child: Row(children: [
             for (var s = 0; s < w.spalten.length; s++)
               SizedBox(
