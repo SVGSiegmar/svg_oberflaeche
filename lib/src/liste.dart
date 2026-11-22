@@ -96,14 +96,19 @@ class _SvgListeState extends State<SvgListe> {
     super.dispose();
   }
 
+  /// Mindestbreiten wachsen und schrumpfen mit der Schriftgröße der App:
+  /// Bei kleiner Schrift passt so mehr in die Breite, bei großer bricht nichts um.
+  double _faktor = 1;
+
   List<double> _breiten(double verfuegbar) {
     final s = widget.spalten;
-    final mindest = s.fold<double>(0, (a, b) => a + b.breite);
+    final mindest = s.fold<double>(0, (a, b) => a + b.breite * _faktor);
     final rest = verfuegbar > mindest ? verfuegbar - mindest : 0.0;
     final flexSumme = s.fold<int>(0, (a, b) => a + b.flex);
     return [
       for (final sp in s)
-        sp.breite + (flexSumme == 0 ? 0 : rest * sp.flex / flexSumme)
+        sp.breite * _faktor +
+            (flexSumme == 0 ? 0 : rest * sp.flex / flexSumme)
     ];
   }
 
@@ -190,7 +195,10 @@ class _SvgListeState extends State<SvgListe> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: LayoutBuilder(builder: (context, grenzen) {
-        final mindest = w.spalten.fold<double>(0, (a, b) => a + b.breite);
+        _faktor =
+            (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(0.6, 1.6);
+        final mindest =
+            w.spalten.fold<double>(0, (a, b) => a + b.breite * _faktor);
         final breite = grenzen.hasBoundedWidth && grenzen.maxWidth > mindest
             ? grenzen.maxWidth
             : mindest;

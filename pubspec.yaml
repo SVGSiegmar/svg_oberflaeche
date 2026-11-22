@@ -2,7 +2,7 @@ name: svg_oberflaeche
 description: >-
   Gemeinsame Oberfläche der Apps des Stadtverbands der Gartenfreunde
   Halle/Saale: Farben, Thema, Meldungen und sortierbare Tabellen.
-version: 0.2.0
+version: 0.2.3
 publish_to: none
 
 environment:
